@@ -4,10 +4,8 @@ import Control.Monad (unless)
 import Text.Printf (printf)
 
 short :: [a] -> Bool
-short [] = True
-short [_] = True
-short [_, _] = True
-short _ = False
+short (_:_:_:_) = False
+short _ = True
 
 lovely :: [Int] -> Bool
 lovely (_:_:c:_) = c == 14
@@ -42,7 +40,8 @@ ageOn planet ageInSeconds = ageInSeconds / (365.25 * 24 * 60 * 60 * orbitalPerio
         _ -> error "Unknown planet"
 
 isLeapYear :: Int -> Bool
-isLeapYear year = (year `mod` 4 == 0) && (year `mod` 100 /= 0 || year `mod` 400 == 0)
+isLeapYear year | year < 0 = error "Year can't be negative"
+                | otherwise = (year `mod` 4 == 0) && (year `mod` 100 /= 0 || year `mod` 400 == 0)
 
 main = do
   runTests

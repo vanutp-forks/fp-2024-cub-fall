@@ -11,28 +11,29 @@ import qualified Data.List as L
 import Text.Printf (printf)
 
 multByIndex :: [Int] -> [Int]
-multByIndex = undefined
+multByIndex lst = zipWith (*) lst [0..]
 
 powerByIndex :: [Int] -> [Int]
-powerByIndex = undefined
+powerByIndex lst = zipWith (^) lst [0..]
 
 productOfDifference :: [Int] -> Int
-productOfDifference = undefined
+productOfDifference lst@(_:_:_) = foldl (*) 1 (zipWith (-) lst (tail lst))
+productOfDifference _ = error "list too short"
 
 isSorted :: [Int] -> Bool 
-isSorted xs = undefined
+isSorted lst = and (zipWith (<=) lst (tail lst))
 
 countElement :: Int -> [Int] -> Int 
-countElement = undefined
+countElement el lst = length (filter (== el) lst)
 
 dotProduct :: [Int] -> [Int] -> Int 
-dotProduct = undefined
+dotProduct a b = sum (zipWith (*) a b)
 
 applyAll :: [a -> b] -> a -> [b]
-applyAll = undefined
+applyAll fs x = map (\f -> f x) fs
 
 interleave :: [a] -> [a] -> [a] 
-interleave = undefined
+interleave a b = concatMap (\(x, y) -> [x, y]) (zip a b)
 
 main = do
   runTests
@@ -147,6 +148,7 @@ runTests = do
           [ ([], [], [])
           , ([1], [2], [1,2])
           , ([1..10], [10,9..1], [1,10,2,9,3,8,4,7,5,6,6,5,7,4,8,3,9,2,10,1])
+          , ([1..10], [1874], [1, 1874])
           ]
    
     describeFailure :: (Show a, Show b) => String -> a -> b -> b -> IO ()

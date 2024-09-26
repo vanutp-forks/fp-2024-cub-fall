@@ -12,7 +12,7 @@ lovely (_:_:c:_) = c == 14
 lovely x = short x
 
 rightTriangles :: [(Int, Int, Int)]
-rightTriangles = []
+rightTriangles = [(a, b, c) | c <- [1..], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
 
 fizzBuzz :: [String]
 fizzBuzz = map item [1..]

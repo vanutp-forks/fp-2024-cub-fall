@@ -1,2 +1,19 @@
-# fp-2024-cub-fall
-This is a supplementary repository for the Introduction to Functional Programming course read at Constructor University Bremen at the fall term of 2024. 
+# HW03
+
+## Soft Deadline 23:59 01.10.2024
+## Hard Deadline 23:59 03.10.2024
+ 
+1. (2 point) Design an algebraic data type `Expr` for a binary expression. 
+   * A number of type `Double` is an expression.
+   * A square root of an expression is an expression. 
+   * Binary operators `+`, `-`, `*`, `/`, and `^` can be used to create an expression
+
+2. (1 point) Make `Expr` an instance of `Show` and `Eq`. 
+
+3. (1 point) Design an algebraic data type `Error` for possible errors which can happen while evaluating the expression (task 5). 
+
+4. (1 point) Make `Error` an instance of `Show` and `Eq`. 
+
+5. (2 point) Implement evaluator function `eval`. It may fail when taking a square root of a negative number or when dividing by zero. 
+
+6. (1 point) Provide test cases for the evaluator: `cases`. Make sure running `main` only prints `Done`. 

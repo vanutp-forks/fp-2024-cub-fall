@@ -36,3 +36,4 @@ test expr expected =
 main :: IO ()
 main = do
   mapM_ (uncurry test) cases
+  putStrLn "Done" 

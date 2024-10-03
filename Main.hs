@@ -4,26 +4,61 @@ import Control.Monad (unless)
 import Text.Printf (printf)
 
 data Expr
-
-instance Show Expr where
-  show = undefined
-
-instance Eq Expr where
-  (==) = undefined
+  = Number Double
+  | Sqrt Expr
+  | Add Expr Expr
+  | Sub Expr Expr
+  | Mul Expr Expr
+  | Div Expr Expr
+  | Pow Expr Expr
+  deriving (Show, Eq)
 
 data Error
+  = NegativeSqrt Expr
+  | DivisionByZero Expr
+  deriving (Eq)
 
 instance Show Error where
-  show = undefined
-
-instance Eq Error where
-  (==) = undefined
+  show (NegativeSqrt expr) = "Square root of negative number: " ++ show expr
+  show (DivisionByZero expr) = "Division by zero: " ++ show expr
 
 eval :: Expr -> Either Error Double
-eval = undefined
+eval (Number x) = Right x
+eval (Sqrt sub) = case eval sub of
+  Right x
+    | x < 0 -> Left (NegativeSqrt (Sqrt sub))
+    | otherwise -> Right (sqrt x)
+  Left e -> Left e
+eval expr =
+  let 
+    evalBinOp op x y = 
+      case (eval x, eval y) of
+        (Right x, Right y) -> Right (op x y)
+        (Left e, _) -> Left e
+        (_, Left e) -> Left e
+  in case expr of
+    Add x y -> evalBinOp (+) x y
+    Sub x y -> evalBinOp (-) x y
+    Mul x y -> evalBinOp (*) x y
+    Div x y -> case eval y of
+      Right y | y == 0 -> Left (DivisionByZero expr)
+      _ -> evalBinOp (/) x y
+    Pow x y -> evalBinOp (**) x y
+
 
 cases :: [(Expr, Either Error Double)]
-cases = undefined
+cases = 
+  [ (Number 1874, Right 1874)
+  , (Sqrt (Number 16), Right 4)
+  , (Add (Number 3) (Number 4), Right 7)
+  , (Sub (Number 3) (Number 4), Right (-1))
+  , (Mul (Number 3) (Number 4), Right 12)
+  , (Div (Number 3) (Number 4), Right 0.75)
+  , (Pow (Number 3) (Number 4), Right 81)
+  , (Sqrt (Number (-1)), Left (NegativeSqrt (Sqrt (Number (-1)))))
+  , (Div (Number 3) (Number 0), Left (DivisionByZero (Div (Number 3) (Number 0))))
+  , (Add (Number 1874) (Div (Number 3) (Number 0)), Left (DivisionByZero (Div (Number 3) (Number 0))))
+  ]
 
 test :: Expr -> Either Error Double -> IO ()
 test expr expected =

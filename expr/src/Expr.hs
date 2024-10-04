@@ -22,7 +22,7 @@ eval :: M.Map String Expr -> Expr -> Maybe Int
 eval _ (Lit n) = Just n
 eval state (Plus x y) =
   case (eval state x, eval state y) of
-    (Just x, Just y) -> Just $ x - y
+    (Just x, Just y) -> Just $ x + y
     _ -> Nothing
 eval state (Var v) = do
   case M.lookup v state of

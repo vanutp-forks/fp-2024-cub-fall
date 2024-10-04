@@ -14,19 +14,19 @@ data Expr
   deriving (Show, Eq)
 
 data Error
-  = NegativeSqrt Expr
+  = NegativeRoot Expr
   | DivisionByZero Expr
   deriving (Eq)
 
 instance Show Error where
-  show (NegativeSqrt expr) = "Square root of negative number: " ++ show expr
+  show (NegativeRoot expr) = "Root of negative number: " ++ show expr
   show (DivisionByZero expr) = "Division by zero: " ++ show expr
 
 eval :: Expr -> Either Error Double
 eval (Number x) = Right x
 eval (Sqrt sub) = case eval sub of
   Right x
-    | x < 0 -> Left (NegativeSqrt (Sqrt sub))
+    | x < 0 -> Left (NegativeRoot (Sqrt sub))
     | otherwise -> Right (sqrt x)
   Left e -> Left e
 eval expr =
@@ -43,7 +43,9 @@ eval expr =
     Div x y -> case eval y of
       Right y | y == 0 -> Left (DivisionByZero expr)
       _ -> evalBinOp (/) x y
-    Pow x y -> evalBinOp (**) x y
+    Pow x y -> case (eval x, eval y) of 
+      (Right x, Right y) | x < 0 && 0 < abs y && abs y < 1 -> Left (NegativeRoot expr)
+      _ -> evalBinOp (**) x y
 
 
 cases :: [(Expr, Either Error Double)]
@@ -55,9 +57,12 @@ cases =
   , (Mul (Number 3) (Number 4), Right 12)
   , (Div (Number 3) (Number 4), Right 0.75)
   , (Pow (Number 3) (Number 4), Right 81)
-  , (Sqrt (Number (-1)), Left (NegativeSqrt (Sqrt (Number (-1)))))
+  , (Sqrt (Number (-1)), Left (NegativeRoot (Sqrt (Number (-1)))))
   , (Div (Number 3) (Number 0), Left (DivisionByZero (Div (Number 3) (Number 0))))
   , (Add (Number 1874) (Div (Number 3) (Number 0)), Left (DivisionByZero (Div (Number 3) (Number 0))))
+  , (Pow (Number (-1)) (Number 0), Right 1)
+  , (Pow (Number (-1)) (Number 1), Right (-1))
+  , (Pow (Number (-1)) (Number 0.5), Left (NegativeRoot (Pow (Number (-1)) (Number 0.5))))
   ]
 
 test :: Expr -> Either Error Double -> IO ()

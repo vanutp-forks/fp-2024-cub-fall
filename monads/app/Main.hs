@@ -7,6 +7,6 @@ import qualified State.Main as State
 
 main :: IO ()
 main = do 
-  Reader.main 
-  State.main 
-  Writer.main
+  State.main
+  -- Reader.main
+  -- Writer.main

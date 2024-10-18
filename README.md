@@ -2,7 +2,7 @@
 ## Soft deadline: 23:59 22.10.2024
 ## Hard Deadline: 23:59 24.10.2024
 
-This homework is to implement the compilation of our tiny expression language into a stack machine language. Check the stack machine language defined in [HW/StackMachine.hs](HW/StackMachine.hs), consult the comments in the other files of the directory, and ask questions if there are any. 
+This homework is to implement the compilation of our tiny expression language into a stack machine language. Check the stack machine language defined in [HW/StackMachine.hs](monads/HW/StackMachine.hs), consult the comments in the other files of the directory, and ask questions if there are any. 
 
 1. (2 point) Implement the compiler in [HW/Compiler.hs](monads/HW/Compiler.hs). 
 

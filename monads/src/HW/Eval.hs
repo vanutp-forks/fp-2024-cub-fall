@@ -7,7 +7,7 @@ import HW.StackMachine
 -- Possible errors during evaluation
 data Error v
   = StackUnderflow (StackInstr v) -- Not enough numbers on the stack to process the instruction
-  | VarUndefined String           -- The variable is not defined in the environment 
+  | VarUndefined v                -- The variable is not defined in the environment 
   | StackNotExhausted Stack       -- After the program has finished evaluation, the stack is not a singleton
   deriving (Show, Eq)
 
@@ -20,7 +20,7 @@ data MachineState v = MachineState
   { getStack :: Stack,
     getEnv :: Env v
   }
-  deriving (Show)
+  deriving (Show, Eq)
 
 -- Run the compiled program on an empty stack and environment
 initialState :: MachineState String
@@ -29,8 +29,41 @@ initialState = MachineState [] M.empty
 -- Execute a single instruction. 
 -- Successful evaluation does not produce any useful result: only the effect of modifying state matters. 
 execInstr :: (Ord v, Show v) => StackInstr v -> MyState (MachineState v) (Either (Error v) ())
-execInstr = undefined 
+execInstr (PushNum x) = do
+  modify $ \s -> s { getStack = x : getStack s }
+  return $ Right ()
+execInstr (PushVar k) = do
+  env <- gets getEnv
+  case M.lookup k env of
+    Just v -> do
+      modify $ \s -> s { getStack = v : getStack s }
+      return $ Right ()
+    Nothing -> return $ Left (VarUndefined k)
+execInstr Add = do
+  stack <- gets getStack
+  case stack of
+    (a:b:_) -> do
+      modify $ \s -> s { getStack = a + b : drop 2 (getStack s)}
+      return $ Right ()
+    _ -> return $ Left (StackUnderflow Add)
+execInstr (StoreVar k) = do
+  stack <- gets getStack
+  case stack of
+    (v:_) -> do
+      modify $ \s -> s { getEnv = M.insert k v (getEnv s), getStack = drop 1 (getStack s) }
+      return $ Right ()
+    _ -> return $ Left (StackUnderflow $ StoreVar k)
 
 -- Execute a list of instructions starting from the given state. 
 execProgram :: (Ord v, Show v) => StackProgram v -> MachineState v -> Either (Error v) (MachineState v)
-execProgram = undefined 
+execProgram program state =
+  let execProgram' [] state =
+        case getStack state of
+          [res] -> Right state
+          _ -> Left (StackNotExhausted $ getStack state)
+      execProgram' (instr:rem) state = 
+        let (newState, res) = runMyState (execInstr instr) state
+        in case res of
+          Left err -> Left err
+          Right _ -> execProgram' rem newState
+  in execProgram' program state

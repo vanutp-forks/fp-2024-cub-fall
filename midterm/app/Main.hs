@@ -8,4 +8,6 @@ run = undefined
 
 -- Use the main function to demostrate how run works. 
 main :: IO ()
-main = undefined 
+main = do
+    tree <- buildTree "." 
+    putStrLn $ show tree

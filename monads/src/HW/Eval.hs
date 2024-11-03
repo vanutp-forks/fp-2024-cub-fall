@@ -29,29 +29,21 @@ initialState = MachineState [] M.empty
 -- Execute a single instruction. 
 -- Successful evaluation does not produce any useful result: only the effect of modifying state matters. 
 execInstr :: (Ord v, Show v) => StackInstr v -> MyState (MachineState v) (Either (Error v) ())
-execInstr (PushNum x) = do
-  modify $ \s -> s { getStack = x : getStack s }
-  return $ Right ()
+execInstr (PushNum x) = fmap Right $ modify $ \s -> s { getStack = x : getStack s }
 execInstr (PushVar k) = do
   env <- gets getEnv
   case M.lookup k env of
-    Just v -> do
-      modify $ \s -> s { getStack = v : getStack s }
-      return $ Right ()
+    Just v -> fmap Right $ modify $ \s -> s { getStack = v : getStack s }
     Nothing -> return $ Left (VarUndefined k)
 execInstr Add = do
   stack <- gets getStack
   case stack of
-    (a:b:_) -> do
-      modify $ \s -> s { getStack = a + b : drop 2 (getStack s)}
-      return $ Right ()
+    (a:b:rem) -> fmap Right $ modify $ \s -> s { getStack = a + b : rem}
     _ -> return $ Left (StackUnderflow Add)
 execInstr (StoreVar k) = do
   stack <- gets getStack
   case stack of
-    (v:_) -> do
-      modify $ \s -> s { getEnv = M.insert k v (getEnv s), getStack = drop 1 (getStack s) }
-      return $ Right ()
+    (v:rem) -> fmap Right $ modify $ \s -> s { getEnv = M.insert k v (getEnv s), getStack = rem }
     _ -> return $ Left (StackUnderflow $ StoreVar k)
 
 -- Execute a list of instructions starting from the given state. 

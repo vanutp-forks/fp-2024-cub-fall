@@ -4,11 +4,11 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 
-name:           midterm
+name:           PBT
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/midterm#readme>
-homepage:       https://github.com/githubuser/midterm#readme
-bug-reports:    https://github.com/githubuser/midterm/issues
+description:    Please see the README on GitHub at <https://github.com/githubuser/PBT#readme>
+homepage:       https://github.com/githubuser/PBT#readme
+bug-reports:    https://github.com/githubuser/PBT/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2024 Author name here
@@ -21,57 +21,57 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/midterm
+  location: https://github.com/githubuser/PBT
 
 library
   exposed-modules:
-      Directory
-      Tree
+      List
+      Sort
   other-modules:
-      Paths_midterm
+      Paths_PBT
   autogen-modules:
-      Paths_midterm
+      Paths_PBT
   hs-source-dirs:
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
-    , containers
-    , directory
-    , filepath
   default-language: Haskell2010
 
-executable midterm-exe
+executable PBT-exe
   main-is: Main.hs
   other-modules:
-      Paths_midterm
+      Paths_PBT
   autogen-modules:
-      Paths_midterm
+      Paths_PBT
   hs-source-dirs:
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
-    , containers
-    , directory
-    , filepath
-    , midterm
+      PBT
+    , base >=4.7 && <5
   default-language: Haskell2010
 
-test-suite midterm-test
+test-suite PBT-test
   type: exitcode-stdio-1.0
-  main-is: Spec.hs
+  main-is: Test.hs
   other-modules:
-      Paths_midterm
+      Test.List
+      Test.Sort
+      Test.Unit
+      Paths_PBT
   autogen-modules:
-      Paths_midterm
+      Paths_PBT
   hs-source-dirs:
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
-    , containers
-    , directory
-    , filepath
-    , midterm
+      PBT
+    , base >=4.7 && <5
+    , hedgehog
+    , tasty
+    , tasty-hedgehog
+    , tasty-hspec
+    , tasty-hunit
+    , tasty-quickcheck
   default-language: Haskell2010

@@ -12,7 +12,7 @@ import qualified Data.List as L
 -- Range 
 -- |-----------|-----------| 
 -- |--------->>|<<---------| 
--- -100  --    0     --   100
+-- -100  --    0    --   100
 
 genInt :: Gen Int
 genInt = Gen.int (Range.linearFrom 0 (-100) 100)
@@ -26,7 +26,15 @@ prop_sorted = property $ do
   let sorted = sort list 
   assert (isSorted sorted)
 
+-- sort list is a permutation (= it can be sorted to the same result) of the list 
+prop_perm :: Property
+prop_perm = property $ do
+  list <- forAll $ genList 1 100
+  let sorted = sort list
+  assert (sorted == L.sort list)
+
 props :: [TestTree]
 props =
   [ testProperty "The sorted list is ordered" prop_sorted
+  , testProperty "The sorted list is a permutation of the original list" prop_perm
   ]

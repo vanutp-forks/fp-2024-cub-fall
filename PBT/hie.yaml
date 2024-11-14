@@ -1,0 +1,10 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "PBT:lib"
+
+    - path: "./app/Main.hs"
+      component: "PBT:exe:PBT-exe"
+
+    - path: "./test"
+      component: "PBT:test:PBT-test"

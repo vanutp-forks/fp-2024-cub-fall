@@ -61,7 +61,9 @@ test-suite PBT-test
   type: exitcode-stdio-1.0
   main-is: Test.hs
   other-modules:
-      Test.Props
+      Test.Compiler
+      Test.Interpreter
+      Test.Utils
       Paths_PBT
   autogen-modules:
       Paths_PBT

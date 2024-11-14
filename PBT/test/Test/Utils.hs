@@ -1,30 +1,31 @@
-module Test.Props (props) where
+module Test.Utils where
 
-import qualified Compiler as C
 import qualified Expr as E
 import Hedgehog
 import qualified Hedgehog.Gen as Gen
 import qualified Hedgehog.Range as Range
 import qualified StackMachine as S
-import Test.Tasty
-import Test.Tasty.Hedgehog
-import Test.Utils
+import qualified Eval as Ev
+import qualified Data.Map as M
 
 genInt :: Gen Int
 genInt = Gen.int (Range.constant (-1000) 1000)
 
-genName :: Gen String
-genName = Gen.string (Range.constant 1 10) Gen.alpha
+genVariableNames :: Gen [String]
+genVariableNames = Gen.list (Range.constant 1 10) $ Gen.string (Range.constant 1 10) Gen.alpha
 
-genExpr :: Gen (E.Expr String)
-genExpr =
+getInitialState :: [String] -> Ev.MachineState String
+getInitialState varNames = Ev.MachineState [] $ M.fromList $ zip varNames [1 ..]
+
+genExpr :: [String] -> Gen (E.Expr String)
+genExpr varNames =
   Gen.recursive
     Gen.choice
     [ E.Num <$> genInt,
-      E.Var <$> genName
+      E.Var <$> Gen.element varNames
     ]
-    [ E.Let <$> genName <*> genExpr <*> genExpr,
-      E.Plus <$> genExpr <*> genExpr
+    [ E.Plus <$> genExpr varNames <*> genExpr varNames,
+      E.Let <$> Gen.element varNames <*> genExpr varNames <*> genExpr varNames
     ]
 
 data ExprType = NumType | VarType | PlusType | LetType | AnyExpr
@@ -56,24 +57,3 @@ getInstructionCountExpr e@(E.Let _ v b) t = fromEnum (isOfType e t) + getInstruc
 getInstructionCountInstr :: [S.StackInstr String] -> StackInstrType -> Int
 getInstructionCountInstr [] _ = 0
 getInstructionCountInstr (i : is) t = fromEnum (isOfTypeInstr i t) + getInstructionCountInstr is t
-
-prop_instructionCount :: Property
-prop_instructionCount = property $ do
-  expr <- forAll genExpr
-  let compiled = C.compile expr
-  assert (getInstructionCountExpr expr AnyExpr == getInstructionCountInstr compiled AnyInstr)
-
-prop_instructionCount2 :: Property
-prop_instructionCount2 = property $ do
-  expr <- forAll genExpr
-  let compiled = C.compile expr
-  assert (getInstructionCountExpr expr NumType == getInstructionCountInstr compiled PushNumType)
-  assert (getInstructionCountExpr expr VarType == getInstructionCountInstr compiled PushVarType)
-  assert (getInstructionCountExpr expr PlusType == getInstructionCountInstr compiled AddType)
-  assert (getInstructionCountExpr expr LetType == getInstructionCountInstr compiled StoreVarType)
-
-props :: [TestTree]
-props =
-  [ testProperty "Instruction count in the compiled program should be the same as in expression" prop_instructionCount,
-    testProperty "Count of each instruction in the compiled program should be the same as equivalent instruction in expression" prop_instructionCount2
-  ]

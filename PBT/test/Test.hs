@@ -1,9 +1,11 @@
 import Test.Tasty
 
-import qualified Test.Props
+import qualified Test.Compiler
+import qualified Test.Interpreter
 
 main :: IO ()
 main = do
   defaultMain (testGroup "All Tests"
-                [ testGroup "Props" Test.Props.props
+                [ testGroup "Compiler" Test.Compiler.props
+                , testGroup "Interpreter" Test.Interpreter.props
                 ])

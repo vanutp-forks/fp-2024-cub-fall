@@ -36,7 +36,7 @@ Choose your project [here](https://docs.google.com/spreadsheets/d/138z6qgMBtROwD
 * (10 points) Console (or other user) interface.
 * (20 points) Implement a solver capable of solving any valid Sudoku puzzle.
 * (20 points) Implement a puzzle generator that creates solvable puzzles of varying difficulty.
-* (10 points) Performance analysis: try to make your solution as performant as possible. 
+* (20 points) Performance analysis: try to make your solution as performant as possible. 
 * (15 points) Error reporting for invalid puzzles or inputs.
 * (15 points) Unit and property-based tests.
 

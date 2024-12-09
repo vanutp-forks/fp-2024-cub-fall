@@ -5,7 +5,7 @@ getWords' :: String -> Int -> String -> [(Int, Int, String)]
 getWords' [] _ _ = []
 getWords' (x:xs) i word
   | isAlpha x = getWords' xs (i + 1) (word ++ [x])
-  | length word > 0 = (i - length word, i - 1, word) : getWords' xs (i + 1) ""
+  | not (null word) = (i - length word, i - 1, word) : getWords' xs (i + 1) ""
   | otherwise = getWords' xs (i + 1) ""
 
 getWords :: String -> [(Int, Int, String)]
@@ -19,7 +19,7 @@ wrap maxWidth text = unlines $ map (wrap' "" "") $ lines text
       | otherwise = currLine ++ "\n" ++ currWord
     wrap' currLine currWord (' ':xs)
       | length (currLine ++ " " ++ currWord) <= maxWidth || currLine == "" =
-        let newLine = if currLine == "" then currWord else (currLine ++ " " ++ currWord)
+        let newLine = if currLine == "" then currWord else currLine ++ " " ++ currWord
          in wrap' newLine "" xs
-      | otherwise = currLine ++ "\n" ++ (wrap' currWord "" xs)
+      | otherwise = currLine ++ "\n" ++ wrap' currWord "" xs
     wrap' currLine currWord (x:xs) = wrap' currLine (currWord ++ [x]) xs

@@ -46,7 +46,7 @@ dictParser =
 optionsParser :: Parser Options
 optionsParser =
   Options
-    <$> ( strOption
+    <$> strOption
           ( long "dictionary"
               <> short 'd'
               <> metavar "DICTIONARY"
@@ -54,7 +54,6 @@ optionsParser =
               <> value "dictionary.json"
               <> showDefault
           )
-      )
     <*> commandParser
 
 opts :: ParserInfo Options

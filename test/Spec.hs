@@ -1,6 +1,5 @@
 
-import Test.Tasty (TestTree, defaultMain, testGroup)
-import Test.Tasty.HUnit (testCase, (@?=))
+import Test.Tasty (defaultMain, testGroup)
 import Tests.Dictionary
 import Tests.Spellcheck
 import Tests.Utils

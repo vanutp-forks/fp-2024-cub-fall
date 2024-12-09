@@ -2,7 +2,6 @@
 
 module Spellcheck (edits1, candidates, spellcheck) where
 
-import Data.Function (on)
 import Data.List (sortOn)
 import qualified Dictionary
 import Dictionary (Dictionary)
@@ -28,7 +27,7 @@ rawCandidates dict word =
   let e1Raw = edits1 word
       e1 = known dict e1Raw
       e2 = HashSet.unions [known dict (edits1 e) | e <- HashSet.toList e1Raw]
-   in if (Dictionary.hasWord dict word)
+   in if Dictionary.hasWord dict word
       then [word]
       else if not $ null e1
       then HashSet.toList e1
@@ -41,7 +40,7 @@ prob dict word = fromIntegral (Dictionary.getWordCount dict word) / fromIntegral
 
 candidates :: Dictionary -> String -> Maybe [String]
 candidates dict word =
-  let sorted = sortOn (negate . (prob dict)) (rawCandidates dict word)
+  let sorted = sortOn (negate . prob dict) (rawCandidates dict word)
    in if sorted == [word] then Nothing else Just $ take 5 sorted
 
 spellcheck :: Dictionary -> String -> [(Int, Int, [String])]

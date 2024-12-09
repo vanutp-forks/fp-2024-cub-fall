@@ -32,6 +32,6 @@ highlightErrors text errors = highlightErrors' (lines text) errors 0 1
     highlightErrors' [] _ _ _ = ""
     highlightErrors' (line:rest) errors i si =
       let (highlighted, suggestions) = highlightLine line errors i
-          suggestionsLines = unlines $ mapInd (\sl i -> "(" ++ (show $ si + i) ++ ") " ++ intercalate ", " sl) suggestions
+          suggestionsLines = unlines $ mapInd (\sl i -> "(" ++ show (si + i) ++ ") " ++ intercalate ", " sl) suggestions
           nextLines = highlightErrors' rest (drop (length suggestions) errors) (i + length line + 1) (si + length suggestions)
       in highlighted ++ "\n" ++ blueBold ++ suggestionsLines ++ reset ++ nextLines

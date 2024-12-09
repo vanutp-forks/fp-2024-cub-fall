@@ -1,10 +1,9 @@
 module Tests.Dictionary (testDictionary) where
 
 import Test.Tasty (TestTree, testGroup)
-import Test.Tasty.HUnit (testCase, assertEqual, (@?=))
+import Test.Tasty.HUnit (testCase, assertEqual)
 import qualified Data.HashSet as HashSet
 import qualified Dictionary
-import Dictionary (Dictionary)
 
 testDictionary :: TestTree
 testDictionary =

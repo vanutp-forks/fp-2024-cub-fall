@@ -7,7 +7,7 @@ import Spellcheck
 
 testSpellcheck :: TestTree
 testSpellcheck =
-  testGroup "Spellcheck" [testEdits1OneLetter, testEdits1TwoLetters, testCandidatesSimple, testCandidatesDistance2]
+  testGroup "Spellcheck" [testEdits1OneLetter, testEdits1TwoLetters, testCandidatesSimple, testCandidatesDistance2, testCandidatesRanking]
   where
     -- 0 deletes + 0 transposes + 25 replaces + 26 * 2 inserts = 77
     testEdits1OneLetter = testCase "edits1: 1 letter" $ length (edits1 "a") @?= 77
@@ -20,6 +20,6 @@ testSpellcheck =
       let dict = Dictionary.fromList ["hello", "world"]
       candidates dict "helo" @?= Just ["hello"]
     testCandidatesRanking = testCase "candidates: ranking" $ do
-      let dict = Dictionary.fromList ["hello", "he$$o", "meow", "hello", "meow", "meow"]
-      candidates dict "heo" @?= Just ["meow", "hello", "he$$o"]
+      let dict = Dictionary.fromList ["hello", "hemmo", "meow", "hello", "meow", "meow"]
+      candidates dict "heo" @?= Just ["meow", "hello", "hemmo"]
 

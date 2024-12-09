@@ -5,7 +5,7 @@ getWords' :: String -> Int -> String -> [(Int, Int, String)]
 getWords' [] _ _ = []
 getWords' (x:xs) i word
   | isAlpha x = getWords' xs (i + 1) (word ++ [x])
-  | length word > 0 = (i - length word, i, word) : getWords' xs (i + 1) ""
+  | length word > 0 = (i - length word, i - 1, word) : getWords' xs (i + 1) ""
   | otherwise = getWords' xs (i + 1) ""
 
 getWords :: String -> [(Int, Int, String)]

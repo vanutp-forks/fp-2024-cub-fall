@@ -22,7 +22,7 @@ highlightLine [] _ _ = ("", [])
 highlightLine (x:xs) [] i = zipT ([x], []) $ highlightLine xs [] (i + 1)
 highlightLine (x:xs) (err@(start, end, suggestions):rest) i
   | i == start = zipT (redBoldUnderline ++ [x], []) $ highlightLine xs (err:rest) (i + 1)
-  | i == end = zipT (reset ++ [x], [suggestions]) $ highlightLine xs rest (i + 1)
+  | i == end = zipT (x : reset, [suggestions]) $ highlightLine xs rest (i + 1)
   | otherwise = zipT ([x], []) $ highlightLine xs (err:rest) (i + 1)
 
 highlightErrors :: String -> [(Int, Int, [String])] -> String

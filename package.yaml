@@ -63,3 +63,5 @@ tests:
     - spellchecker
     - tasty
     - tasty-hunit
+    - hedgehog
+    - tasty-hedgehog
